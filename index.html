@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>ShariaMate</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#cce8f5;--navy:#0b2240;--navy-dk:#071628;--bp:#1565c0;--bm:#1976d2;--bi:#1e88e5;--bpc:#3d8fbf;--wh:#fff;--txt:#0d1b2e;--muted:#556677;--shad:0 2px 14px rgba(0,30,60,.12);--r:16px;--rsm:10px;--sec:#0f1c2e}
+html,body{font-family:'Poppins',sans-serif;background:#0d1b2e;min-height:100vh}
+.app{max-width:430px;min-height:100vh;margin:0 auto;background:var(--bg);position:relative;overflow-x:hidden}
+.screen{display:none;min-height:100vh;padding-bottom:72px;background:var(--bg)}
+.screen.active{display:block}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:5px 14px;font-size:12px;font-weight:600;color:var(--txt)}
+.ih{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:8px}
+.bbtn{background:var(--bm);border:none;color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.loc{color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;gap:3px;text-decoration:underline;cursor:pointer}
+.hero{background:#fff;margin:12px;border-radius:var(--r);padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shad)}
+.hero h1{font-size:22px;font-weight:900;color:var(--txt);line-height:1.2}
+.hero-sub{font-size:12px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:6px}
+.secbar{background:var(--sec);color:#fff;padding:14px 16px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px}
+.srch{margin:0 12px 12px;display:flex;gap:8px}
+.srch input{flex:1;background:var(--sec);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-size:13px;font-family:'Poppins',sans-serif;outline:none}
+.srch input::placeholder{color:#7a9aaa}
+.srch-btn{background:var(--bp);border:none;border-radius:10px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0}
+.card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--shad);margin:12px}
+.ftcards{padding:0 12px;display:flex;flex-direction:column;gap:14px}
+.ftcard{background:#fff;border-radius:var(--r);overflow:hidden;display:flex;gap:10px;box-shadow:var(--shad);cursor:pointer;padding:12px;align-items:flex-start}
+.ftcard-img{width:110px;height:90px;border-radius:var(--rsm);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ftcard h3{font-size:14px;font-weight:700;color:var(--txt);text-decoration:underline;margin-bottom:5px}
+.ftcard p{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:8px}
+.btn-ll{background:var(--bp);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer}
+.stitle{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--txt);margin-bottom:12px}
+.sbullet{width:18px;height:18px;background:var(--bp);border-radius:50%;flex-shrink:0}
+.dots3{display:flex;gap:3px}.dots3 span{width:6px;height:6px;background:var(--bm);border-radius:50%}
+.srow{display:flex;gap:8px}
+.spill{background:#c7e5f5;border-radius:12px;padding:10px 12px;flex:1;min-width:70px}
+.spill .sl{font-size:10px;color:var(--muted);font-weight:500}
+.spill .sv{font-size:13px;font-weight:800;color:var(--txt);margin:2px 0}
+.spill .sc{font-size:10px;color:var(--bm)}
+.chartbox{background:#fff;border-radius:12px;padding:12px;border:1px solid #d8eaf5;margin-top:10px}
+.chartlbl{font-size:11px;color:var(--muted);margin-bottom:6px}
+.fsel{background:#fff;border:1px solid #bbb;border-radius:20px;padding:8px 36px 8px 14px;font-size:12px;font-family:'Poppins',sans-serif;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='%23333' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;width:100%}
+.fpills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.fpill{background:#fff;border:1px solid #ccc;border-radius:20px;padding:6px 12px;font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer}
+.evitem{background:#cde7f5;border-radius:var(--rsm);padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.evico{width:38px;height:38px;background:#a5cce0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.evinfo{flex:1}.evinfo .en{font-size:12px;font-weight:700}.evinfo .ed{font-size:10px;color:var(--muted)}
+.evbdg{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:10px;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;white-space:nowrap}
+.evbdg.ok{background:#444}
+.dnut{display:flex;align-items:center;gap:16px}
+.dnut-cv{position:relative;width:140px;height:140px;flex-shrink:0}
+.dnut-cv canvas{width:140px!important;height:140px!important}
+.dleg .li{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;font-weight:600}
+.dleg .ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dleg .lp{text-decoration:underline}
+.prodlist{padding:0 12px;display:flex;flex-direction:column;gap:12px}
+.pcard{background:var(--bpc);border-radius:var(--r);padding:12px;display:flex;gap:10px;align-items:center;position:relative;cursor:pointer}
+.pimg{width:80px;height:80px;border-radius:8px;background:linear-gradient(135deg,#2a7aaa,#0d3b70);flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hbdg{position:absolute;top:2px;left:2px;width:26px;height:26px;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:6px;color:#fff;font-weight:700;text-align:center;line-height:1.1;background:transparent;z-index:1}
+.pinfo{flex:1}.pname{font-size:14px;font-weight:700;color:#fff}.pdesc{font-size:10px;color:rgba(255,255,255,.85);margin:3px 0}
+.pacts{display:flex;align-items:center;gap:6px;margin-top:6px}
+.pbtn{background:#1a5fa8;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-family:'Poppins',sans-serif;font-weight:700;cursor:pointer}
+.pcart{background:#111828;border:none;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+.pheart{position:absolute;top:8px;right:8px;background:#fff;border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#ccc;font-size:13px}
+.pheart.liked{color:#e53935}
+.dhdr{background:var(--bg);padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start}
+.dgreet{font-size:12px;color:var(--muted)}.duname{font-size:20px;font-weight:800;color:var(--txt)}.dcity{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.wcard{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--shad);position:relative;overflow:hidden;min-height:135px;margin:0 12px 10px;cursor:pointer}
+.wlbl{font-size:13px;font-weight:600;color:var(--muted)}.wblbl{font-size:12px;color:var(--muted);margin-top:8px}.wbal{font-size:20px;font-weight:800;color:var(--txt)}
+.wnum{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:10px}.wown{font-size:13px;font-weight:600;color:var(--txt)}
+.wcirc{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:88px;height:88px;background:linear-gradient(135deg,#4da0d9,#1a4a8a);border-radius:50%;opacity:.7}
+.carrows{position:absolute;top:50%;transform:translateY(-50%);width:100%;display:flex;justify-content:space-between;pointer-events:none;padding:0 6px}
+.carrow{background:rgba(255,255,255,.8);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:all;font-size:14px;color:var(--navy)}
+.ficons{display:flex;justify-content:space-around;padding:10px 14px}
+.fib{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+.fibox{width:62px;height:62px;background:var(--bi);border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:var(--shad)}
+.filbl{font-size:10px;font-weight:600;color:var(--txt);text-align:center;line-height:1.2}
+.dsrch{margin:8px 12px;display:flex;gap:8px}
+.dsrch input{flex:1;background:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:12px;font-family:'Poppins',sans-serif;outline:none;color:var(--txt);box-shadow:var(--shad)}
+.dsrch input::placeholder{color:var(--muted)}
+.dsfbtn{background:var(--navy-dk);border:none;border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+.txhdr{display:flex;justify-content:space-between;align-items:center;padding:6px 16px}
+.txtit{font-size:13px;font-weight:700}.txsort{font-size:11px;color:var(--muted)}
+.txitem{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #dceefa}
+.txico{width:42px;height:42px;background:var(--bp);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.txamt{font-size:14px;font-weight:800}.txdt{font-size:10px;color:var(--muted)}.txtyp{font-size:12px;color:var(--muted)}.txst{font-size:12px;font-weight:600;color:var(--bp)}
+.chatbanner{margin:12px;background:#fff;border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shad);cursor:pointer}
+.chatbtn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:7px 12px;font-size:12px;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;flex-shrink:0}
+.chatttl{font-size:12px;font-weight:700}.chatsub{font-size:10px;color:var(--muted)}
+.schdr{background:var(--bp);padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.catgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.citem{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.cibox{width:42px;height:42px;background:var(--bp);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.cilbl{font-size:8px;font-weight:600;color:var(--txt);text-align:center}
+.discbanner{margin:0 12px;background:linear-gradient(135deg,#0b2240,#1565c0);border-radius:var(--r);padding:18px}
+.discttl{font-size:20px;font-weight:900;color:#fff;letter-spacing:2px}
+.discsub{font-size:11px;color:rgba(255,255,255,.8);margin-bottom:6px}
+.discpct{font-size:52px;font-weight:900;color:#fff;line-height:1}
+.upto{font-size:11px;font-weight:600;color:rgba(255,255,255,.8);text-align:right}
+.lshdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.lsbdg{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700}
+.lsdot{width:11px;height:11px;background:#e53935;border-radius:50%;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.lscards{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.lsc{flex-shrink:0;width:138px;height:148px;border-radius:var(--rsm);background:linear-gradient(180deg,#1a3d72,#0b2240);overflow:hidden;position:relative;cursor:pointer}
+.lsc-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);color:#fff;font-size:10px;font-weight:600;padding:5px 7px}
+.lsc-bdg{position:absolute;top:5px;left:5px;background:var(--bp);color:#fff;font-size:8px;font-weight:700;padding:2px 5px;border-radius:4px}
+.lsc-vw{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.5);color:#ff6b6b;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700}
+.perfbox{margin:0 12px 12px;background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shad)}
+.perfrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.stars{color:#ffc107;font-size:13px;letter-spacing:1px}.pcnt{font-weight:700;font-size:14px}
+.pbtn2{background:var(--bp);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-family:'Poppins',sans-serif;font-weight:600;text-align:center}
+.pdots{display:flex;justify-content:center;gap:5px}
+.pd{width:8px;height:8px;border-radius:50%;background:#b0cfe0}.pd.a{background:var(--bp)}
+.wditem{background:#cde7f5;border-radius:var(--rsm);padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.wdico{width:38px;height:38px;background:#a5cce0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.wdinfo{flex:1}.wdname{font-size:12px;font-weight:700}.wddet{font-size:10px;color:var(--muted)}.wdbdg{font-size:10px;color:#fff;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;white-space:nowrap}
+.zkitem{background:#cde7f5;border-radius:var(--rsm);padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.zkico{width:38px;height:38px;background:#a5cce0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.zkinfo{flex:1}.zkrow{font-size:11px;font-weight:500;color:var(--txt)}.zkrow span{font-weight:700}
+.rembox{background:#fff;border-radius:var(--rsm);padding:12px;border:1px solid #dceef5}
+.remhdr{font-size:13px;font-weight:700;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:7px}
+.remtxt{font-size:11px;color:var(--muted);line-height:1.5}
+.invpromo{background:var(--sec);border-radius:var(--r);overflow:hidden;position:relative;cursor:pointer;margin-bottom:12px;height:160px}
+.invbg{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.invtxt{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);color:#fff;text-align:center;font-size:11px;font-weight:600;width:78%;background:rgba(100,160,220,.55);border-radius:20px;padding:7px 10px}
+.invlbl{position:absolute;bottom:0;left:0;right:0;background:var(--bp);color:#fff;text-align:center;padding:8px;font-size:12px;font-weight:600}
+.bssec{margin:12px;background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shad)}
+.bssec h3{font-size:13px;font-weight:700;padding:10px 14px}
+.bsimg{width:100%;height:135px;display:flex;align-items:center;justify-content:center}
+.bsbtn{background:var(--bp);color:#fff;width:100%;border:none;padding:11px;font-size:12px;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;text-align:center;display:block}
+#bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--navy-dk);display:none;align-items:center;justify-content:space-around;padding:7px 0 13px;z-index:1000;border-top:1px solid #1a2a40}
+.nitem{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:#4a6a8a;min-width:50px}
+.nitem.on{color:#fff}.nitem span{font-size:9px;font-weight:500}
+.ncbtn{width:50px;height:50px;background:var(--navy-dk);border:2px solid #2a3a50;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;margin-top:-18px;cursor:pointer}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:#111;color:#fff;padding:11px 22px;border-radius:20px;font-size:12px;font-weight:600;z-index:9999;transition:transform .3s ease;max-width:360px;text-align:center;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+#screen-login{background:linear-gradient(180deg,#cce8f5 0%,#b8d8ee 100%);flex-direction:column;align-items:center;padding:0}
+.ltop{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 24px 30px;gap:8px}
+.lform{background:var(--navy);border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%}
+.flbl{font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;display:block}
+.finput{width:100%;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:#fff;padding:13px 16px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;color:var(--txt);margin-bottom:10px}
+.finput-wrap{position:relative;margin-bottom:10px}
+.finput-wrap .finput{margin-bottom:0;padding-left:38px}
+.finput-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.finput-eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted)}
+.frow{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.frow label{font-size:11px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:5px;cursor:pointer}
+.frow a{font-size:11px;color:rgba(255,255,255,.8);text-decoration:none;cursor:pointer}
+.btnmasuk{width:100%;background:#e8f4fd;color:var(--navy);border:none;border-radius:10px;padding:15px;font-size:15px;font-family:'Poppins',sans-serif;font-weight:800;letter-spacing:2px;cursor:pointer;margin-bottom:14px;text-transform:uppercase}
+.reglink{text-align:center;color:rgba(255,255,255,.7);font-size:12px;cursor:pointer}
+.logtitle{font-size:26px;font-weight:900;color:var(--txt)}
+.halal-circle-wh{width:26px;height:26px;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff}
+.tkhdr{background:var(--navy);padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.tkttl{font-size:16px;font-weight:800;color:#fff}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div id="screen-login" class="screen active" style="display:flex;flex-direction:column;align-items:center">
+<div class="ltop">
+  <svg width="110" height="110" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+    <text x="-4" y="100" font-size="110" font-weight="900" fill="#1a4a8a" font-family="Georgia,serif" opacity=".9">S</text>
+    <line x1="30" y1="68" x2="68" y2="32" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="68,28 75,38 62,36" fill="#fff"/>
+    <text x="60" y="32" font-size="14" font-weight="700" fill="#1a4a8a" font-family="serif">Rp</text>
+  </svg>
+  <div class="logtitle">ShariaMate</div>
+</div>
+<div class="lform">
+  <label class="flbl">Email</label>
+  <input class="finput" type="email" value="farrelsalsa.04@gmail.com">
+  <label class="flbl">Kata Sandi</label>
+  <div class="finput-wrap">
+    <svg class="finput-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <input class="finput" type="password" placeholder="Kata Sandi">
+    <button class="finput-eye"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+  </div>
+  <div class="frow">
+    <label><input type="checkbox" checked> Ingat Saya</label>
+    <a href="#">Lupa Kata Sandi</a>
+  </div>
+  <button class="btnmasuk" onclick="navigate('screen-dashboard')">MASUK</button>
+  <div class="reglink" onclick="showToast('Fitur pendaftaran akan segera tersedia')">Tidak Punya Akun? Buat Akun Baru</div>
+</div>
+</div>
+
+<div id="screen-dashboard" class="screen">
+<div class="sb"><span>10:01 AM</span><div style="display:flex;gap:5px;align-items:center"><svg width="14" height="10" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5C5 1 19 1 23 5" stroke-linecap="round"/><path d="M4 9C7 6 17 6 20 9" stroke-linecap="round"/><circle cx="12" cy="17" r="2" fill="currentColor"/></svg><svg width="18" height="10" viewBox="0 0 28 14" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="2" width="22" height="10" rx="2"/><rect x="3" y="4" width="14" height="6" rx="1" fill="currentColor"/><path d="M25 6v2" stroke-linecap="round" stroke-width="3"/></svg></div></div>
+<div class="dhdr">
+  <div><div class="dgreet">Selamat Datang!</div><div class="duname">Farrel</div><div class="dcity"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Kota Tangerang Selatan</div></div>
+  <svg width="44" height="44" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#1a4a8a" font-family="Georgia,serif" opacity=".85">S</text><line x1="30" y1="68" x2="68" y2="32" stroke="#4da0d9" stroke-width="6" stroke-linecap="round"/><polygon points="68,28 75,38 62,36" fill="#4da0d9"/><text x="60" y="32" font-size="14" font-weight="700" fill="#1a4a8a" font-family="serif">Rp</text></svg>
+</div>
+<div class="wcard" onclick="navigate('screen-halal-wallet')">
+  <div class="wlbl">Halal Wallet</div>
+  <div class="wblbl">Saldo User</div>
+  <div class="wbal">Rp4.500.000</div>
+  <div class="wnum">&#9679;&#9679;&#9679;&#9679; &#9679;&#9679;&#9679;&#9679; &#9679;&#9679;&#9679;&#9679; 1234</div>
+  <div class="wown">Farrel</div>
+  <div class="wcirc"></div>
+  <div class="carrows">
+    <button class="carrow">&#8592;</button>
+    <button class="carrow">&#8594;</button>
+  </div>
+</div>
+<div class="ficons">
+  <div class="fib" onclick="navigate('screen-sharia-commerce')"><div class="fibox"><svg width="28" height="28" viewBox="0 0 36 36" fill="none" stroke="#fff" stroke-width="2"><rect x="6" y="6" width="24" height="28" rx="2"/><rect x="12" y="2" width="12" height="8" rx="2"/><line x1="12" y1="16" x2="24" y2="16"/><line x1="12" y1="22" x2="20" y2="22"/></svg></div><div class="filbl">Sharia<br>Commerce</div></div>
+  <div class="fib" onclick="navigate('screen-zakat-pay')"><div class="fibox"><svg width="28" height="28" viewBox="0 0 36 36" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="18" r="14"/><path d="M18 10v4M18 22v4M14 14h6a2 2 0 010 4h-4a2 2 0 010 4h6"/></svg></div><div class="filbl">Zakat<br>Pay</div></div>
+  <div class="fib" onclick="navigate('screen-mi-invest')"><div class="fibox"><svg width="28" height="28" viewBox="0 0 36 36" fill="none" stroke="#fff" stroke-width="2"><polyline points="4,28 12,16 20,22 28,8 34,12"/><polyline points="28,8 34,8 34,12"/></svg></div><div class="filbl">Mudharabah<br>Invest</div></div>
+  <div class="fib" onclick="navigate('screen-waqf-hub')"><div class="fibox"><svg width="28" height="28" viewBox="0 0 36 36" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="5"/><circle cx="24" cy="12" r="5"/><path d="M2 30c0-8 20-8 20 0"/><path d="M24 30c0-4 8-4 10 0"/></svg></div><div class="filbl">Waqf<br>Hub</div></div>
+</div>
+<div class="dsrch">
+  <input type="text" placeholder="Cari produk di sini">
+  <button class="dsfbtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
+</div>
+<div class="txhdr"><span class="txtit">Transaksi</span><span class="txsort">Urutkan dari Terbesar &#9660;</span></div>
+<div class="txitem">
+  <div class="txico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+  <div style="flex:1"><div class="txamt">Rp500.000</div><div class="txdt">17 Mei 2026</div></div>
+  <div class="txtyp">Checkout</div><div class="txst">Sukses</div>
+</div>
+<div class="txitem">
+  <div class="txico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+  <div style="flex:1"><div class="txamt">Rp250.000</div><div class="txdt">10 Mei 2026</div></div>
+  <div class="txtyp">Wakaf</div><div class="txst">Sukses</div>
+</div>
+<div class="txitem">
+  <div class="txico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+  <div style="flex:1"><div class="txamt">Rp150.000</div><div class="txdt">15 April 2026</div></div>
+  <div class="txtyp">Zakat</div><div class="txst">Sukses</div>
+</div>
+<div class="chatbanner" onclick="navigate('screen-chat')">
+  <button class="chatbtn">Chat di sini</button>
+  <div><div class="chatttl">Virtual Chat Assistant</div><div class="chatsub">(Bertanya Apapun kepada Chat Bot!)</div></div>
+  <svg width="36" height="36" viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="20" fill="#1565c0"/><circle cx="17" cy="21" r="3" fill="#fff"/><circle cx="29" cy="21" r="3" fill="#fff"/><path d="M17 30c2 2 10 2 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="10" y="14" width="26" height="18" rx="6" fill="none" stroke="#fff" stroke-width="1.5"/></svg>
+</div>
+</div>
+
+<div id="screen-sharia-commerce" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="hero"><div><h1>Sharia<br>Commerce</h1><div class="hero-sub"><svg width="20" height="14" viewBox="0 0 40 28" fill="none" stroke="#aaa" stroke-width="2"><polyline points="2,26 12,10 22,16 32,4"/></svg>Marketplace halal Indonesia</div></div><svg width="60" height="60" viewBox="0 0 80 80" fill="none"><rect x="10" y="40" width="14" height="10" fill="#ffc107" rx="2"/><path d="M30 25 L55 25 L62 48 L23 48 Z" fill="#1565c0"/><text x="35" y="42" font-size="14" fill="#fff" font-weight="700">$</text></svg></div>
+<div class="srch"><input type="text" placeholder="Cari ShariaCommerce di sini"><button class="srch-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg></button></div>
+<div class="ftcards">
+<div class="ftcard" onclick="navigate('screen-sc-marketplace')"><div class="ftcard-img"><div style="background:linear-gradient(135deg,#1a2e4a,#0d1b30);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="40" viewBox="0 0 70 50" fill="none"><rect x="5" y="5" width="60" height="40" rx="4" fill="#1565c0" opacity=".4"/><text x="8" y="34" font-size="24" fill="#fff" font-weight="900">SELL</text></svg></div></div><div><h3>Marketplace Halal</h3><p>Fitur ShariaCommerce yang menyediakan marketplace halal berbasis prinsip syariah.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-sc-marketplace')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-sc-most-wanted')"><div class="ftcard-img"><div style="background:linear-gradient(135deg,#1a2a10,#0a1a08);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><text x="4" y="18" font-size="9" fill="#aaa">Competitive</text><text x="4" y="28" font-size="8" fill="#ccc">Advantage</text><text x="4" y="46" font-size="14" fill="#fff" font-weight="700">USP</text></svg></div></div><div><h3>Most-Wanted Product</h3><p>Fitur ikhtisar penjualan produk (selling volume), filter produk, dan evaluasi produk.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-sc-most-wanted')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-sc-selling-volume')"><div class="ftcard-img"><div style="background:linear-gradient(135deg,#1a3d72,#0b2240);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><polyline points="5,50 15,35 25,40 35,20 50,28 60,8" stroke="#64b5f6" stroke-width="2.5" fill="none"/></svg></div></div><div><h3>Selling Volume</h3><p>Ikhtisar kinerja penjualan per bulan dengan analitik mendalam dan laporan berkala.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-sc-selling-volume')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-sc-business-support')"><div class="ftcard-img"><div style="background:linear-gradient(135deg,#1a1a3a,#0d0d20);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><line x1="35" y1="5" x2="35" y2="52" stroke="#fff" stroke-width="2"/><line x1="8" y1="30" x2="62" y2="30" stroke="#fff" stroke-width="2"/><circle cx="35" cy="28" r="18" stroke="#64b5f6" stroke-width="2" fill="none"/></svg></div></div><div><h3>Syariah Business Support</h3><p>Fitur berupa akses ke bimbingan atau modul pelatihan tentang pengelolaan bisnis halal.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-sc-business-support')">Lebih Lanjut...</button></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<div id="screen-sc-marketplace" class="screen">
+<div class="schdr" style="background:var(--bp);padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+  <div style="font-size:17px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px">ShariaCommerce
+    <div class="halal-circle-wh">&#x062D;&#x0644;&#x0627;&#x0644;</div>
+  </div>
+  <div style="display:flex;gap:10px;color:#fff">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/></svg>
+  </div>
+</div>
+<div style="background:#f5f8fa;padding:9px 14px;display:flex;align-items:center;gap:8px;margin:10px 12px;border-radius:20px">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg>
+  <span style="font-size:12px;color:#999;flex:1">Apa yang ingin Anda belanjakan hari ini?</span>
+</div>
+<div style="background:#fff;border-radius:var(--r);margin:0 12px;padding:12px;box-shadow:var(--shad)">
+  <div class="catgrid">
+    <div class="citem"><div class="cibox">&#128085;</div><div class="cilbl">Baju</div></div>
+    <div class="citem"><div class="cibox">&#128084;</div><div class="cilbl">Celana</div></div>
+    <div class="citem"><div class="cibox">&#128087;</div><div class="cilbl">Rok</div></div>
+    <div class="citem"><div class="cibox">&#128088;</div><div class="cilbl">Gaun</div></div>
+    <div class="citem"><div class="cibox">&#128083;</div><div class="cilbl">Jas</div></div>
+    <div class="citem"><div class="cibox">&#128086;</div><div class="cilbl">Kemeja</div></div>
+    <div class="citem"><div class="cibox">&#128094;</div><div class="cilbl">Sepatu</div></div>
+    <div class="citem"><div class="cibox">&#129479;</div><div class="cilbl">Kaus Kaki</div></div>
+    <div class="citem"><div class="cibox">&#128097;</div><div class="cilbl">Sandal</div></div>
+    <div class="citem"><div class="cibox">&#129468;</div><div class="cilbl">Boots</div></div>
+    <div class="citem"><div class="cibox">&#128093;</div><div class="cilbl">Heels</div></div>
+    <div class="citem"><div class="cibox">&#128144;</div><div class="cilbl">Aksesoris</div></div>
+  </div>
+  <div class="pdots" style="margin-top:6px"><div class="pd"></div><div class="pd a"></div></div>
+</div>
+<div style="margin:10px 12px">
+  <div class="discbanner">
+    <div class="discsub">Lihat berbagai toko yang memiliki diskon besar!</div>
+    <div class="discttl">DISCOUNT SALE!</div>
+    <div style="display:flex;justify-content:flex-end;align-items:baseline"><div><div class="upto">UP TO</div><div class="discpct">70%</div></div></div>
+  </div>
+  <div class="pdots" style="margin:6px 0"><div class="pd a"></div><div class="pd"></div><div class="pd"></div></div>
+</div>
+<div style="padding:0 12px 12px">
+  <div class="lshdr">
+    <div class="lsbdg"><div class="lsdot"></div><span>Live Sale</span></div>
+    <span style="font-size:20px;color:var(--muted);cursor:pointer">&#8943;</span>
+  </div>
+  <div class="lscards">
+    <div class="lsc" onclick="navigate('screen-sc-toko-baju')">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#1a1a1a,#3a2a10);display:flex;align-items:center;justify-content:center"><svg width="60" height="70" viewBox="0 0 80 90" fill="none"><circle cx="40" cy="18" r="10" fill="#c8a97e"/><ellipse cx="40" cy="50" rx="18" ry="14" fill="#b8860b" opacity=".8"/></svg></div>
+      <div class="lsc-bdg">Toko Aksesoris</div><div class="lsc-vw">1.1K</div>
+      <div class="lsc-lbl">Aksesoris halal harga miring!</div>
+    </div>
+    <div class="lsc" onclick="navigate('screen-sc-toko-baju')">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#2a2a3a,#1a1a2a);display:flex;align-items:center;justify-content:center"><svg width="60" height="70" viewBox="0 0 80 90" fill="none"><circle cx="40" cy="16" r="10" fill="#c8a97e"/><path d="M20 28 L40 26 L60 28 L64 48 L54 48 L54 78 L26 78 L26 48 L16 48 Z" fill="#888"/></svg></div>
+      <div class="lsc-bdg">Toko Pakaian</div><div class="lsc-vw">1.1K</div>
+      <div class="lsc-lbl">Pakaian trendi tahun ini!</div>
+    </div>
+    <div class="lsc" onclick="navigate('screen-sc-toko-baju')">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,#1a2a1a,#0d1a0d);display:flex;align-items:center;justify-content:center"><svg width="60" height="70" viewBox="0 0 80 90" fill="none"><circle cx="40" cy="16" r="10" fill="#c8a97e"/><path d="M20 28 L40 26 L60 28 L64 48 L54 48 L54 78 L26 78 L26 48 L16 48 Z" fill="#6a9a6a"/></svg></div>
+      <div class="lsc-bdg">Baju Muslim</div><div class="lsc-vw">1.1K</div>
+      <div class="lsc-lbl">Busana muslim pria elegan!</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="screen-sc-toko-baju" class="screen">
+<div class="tkhdr">
+  <span class="tkttl">Toko Baju Muslim</span>
+  <div style="width:36px;height:36px;background:#888;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="5"/><path d="M3 21c0-5 18-5 18 0"/></svg></div>
+</div>
+<div style="padding:10px 12px;display:flex;gap:8px">
+  <input type="text" placeholder="Cari di sini..." style="flex:1;background:#fff;border:1px solid #ddd;border-radius:20px;padding:9px 16px;font-size:12px;font-family:'Poppins',sans-serif;outline:none">
+</div>
+<div style="padding:0 12px 10px;display:flex;gap:8px">
+  <select style="flex:1;background:#fff;border:1px solid #ddd;border-radius:10px;padding:8px 12px;font-family:'Poppins',sans-serif;font-size:12px;outline:none"><option>Urutkan dari</option><option>Harga Terendah</option><option>Harga Tertinggi</option></select>
+  <button style="background:var(--navy);border:none;border-radius:10px;width:40px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
+</div>
+<div class="prodlist">
+<div class="pcard" onclick="showToast('Koko Abu-Abu ditambahkan ke keranjang')">
+  <div class="pimg"><div class="hbdg">HALAL</div><svg width="38" height="48" viewBox="0 0 50 65" fill="none"><circle cx="25" cy="10" r="7" fill="#c8a97e"/><path d="M10 22 L25 20 L40 22 L44 38 L36 38 L36 58 L14 58 L14 38 L6 38 Z" fill="#888"/></svg></div>
+  <div class="pinfo"><div class="pname">Koko Abu-Abu</div><div class="pdesc">Busana muslim pria dengan corak unik dan khas warna abu-abu</div>
+  <div class="pacts"><button class="pbtn">Rp150.000</button><button class="pcart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></button></div></div>
+  <button class="pheart">&#9825;</button>
+</div>
+<div class="pcard" onclick="showToast('Jilbab Coklat ditambahkan ke keranjang')">
+  <div class="pimg"><div class="hbdg">HALAL</div><svg width="42" height="50" viewBox="0 0 55 65" fill="none"><ellipse cx="27" cy="12" rx="13" ry="15" fill="#8B4513" opacity=".9"/><ellipse cx="27" cy="28" rx="22" ry="20" fill="#7a3a10" opacity=".8"/></svg></div>
+  <div class="pinfo"><div class="pname">Jilbab Coklat</div><div class="pdesc">Jilbab syari panjang wanita dengan warna coklat elegan</div>
+  <div class="pacts"><button class="pbtn">Rp55.000</button><button class="pcart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></button></div></div>
+  <button class="pheart liked">&#9829;</button>
+</div>
+<div class="pcard" onclick="showToast('Jilbab Putih ditambahkan ke keranjang')">
+  <div class="pimg"><div class="hbdg">HALAL</div><svg width="42" height="50" viewBox="0 0 55 65" fill="none"><ellipse cx="27" cy="12" rx="13" ry="15" fill="#eee" opacity=".9"/><ellipse cx="27" cy="28" rx="22" ry="20" fill="#ddd" opacity=".8"/></svg></div>
+  <div class="pinfo"><div class="pname">Jilbab Putih</div><div class="pdesc">Jilbab warna putih polos cocok untuk wanita</div>
+  <div class="pacts"><button class="pbtn">Rp65.000</button><button class="pcart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></button></div></div>
+  <button class="pheart">&#9825;</button>
+</div>
+<div class="pcard" onclick="showToast('Baju Muslim Anak ditambahkan ke keranjang')">
+  <div class="pimg"><div class="hbdg">HALAL</div><svg width="34" height="50" viewBox="0 0 45 65" fill="none"><circle cx="22" cy="8" r="6" fill="#c8a97e"/><path d="M12 16 L22 14 L32 16 L34 30 L28 30 L28 54 L16 54 L16 30 L10 30 Z" fill="#eee"/></svg></div>
+  <div class="pinfo"><div class="pname">Baju Muslim Anak</div><div class="pdesc">Pakaian muslim anak satu set dengan peci dan celana putih</div>
+  <div class="pacts"><button class="pbtn">Rp200.000</button><button class="pcart"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></button></div></div>
+  <button class="pheart">&#9825;</button>
+</div>
+</div>
+<div class="pdots" style="padding:10px 0"><div class="pd"></div><div class="pd a"></div><div class="pd"></div></div>
+</div>
+
+<div id="screen-sc-selling-volume" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-sharia-commerce')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polyline points="3,32 3,6 33,6" stroke="#fff" stroke-width="2" fill="none"/><rect x="5" y="20" width="6" height="12" fill="#fff"/><rect x="15" y="14" width="6" height="18" fill="#fff" opacity=".7"/><rect x="25" y="8" width="6" height="24" fill="#fff" opacity=".5"/></svg>Selling Volume</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Sales Performance Overview</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="srow">
+<div class="spill"><div class="sl">Penjualan</div><div class="sv">Rp9.540.200</div><div class="sc">+4.1%</div></div>
+<div class="spill"><div class="sl">Profit</div><div class="sv">Rp2.526.500</div><div class="sc">+6.7%</div></div>
+<div class="spill"><div class="sl">Order</div><div class="sv">459</div></div>
+</div>
+</div>
+<div style="padding:0 12px 12px">
+<div class="stitle"><div class="sbullet"></div>Sales Performance</div>
+<select class="fsel" style="margin-bottom:10px"><option>Pilih periode untuk filter</option><option>Januari 2026</option></select>
+<div class="chartbox" style="height:200px"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Kinerja Penjualan per Bulan (dalam puluhan)</div><canvas id="canvas-selling-volume" height="180"></canvas></div>
+</div>
+<div class="perfbox">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Performance Details</div><span style="font-size:11px;color:var(--muted)">(Dipilih: Januari 2026)</span></div>
+<select class="fsel" style="margin-bottom:12px"><option>Filter On: Most Ratings</option></select>
+<div style="display:flex;gap:12px">
+<div style="flex:1">
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span><span class="pcnt">113</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">100</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">60</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcnt">50</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span><span class="pcnt">2</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+<button class="pbtn2" style="width:140px">Order Diterima: 370</button>
+<button class="pbtn2" style="width:140px">Order Dibatalkan: 30</button>
+</div></div></div>
+</div>
+
+<div id="screen-sc-most-wanted" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-sharia-commerce')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polygon points="18,2 22,14 34,14 24,22 28,34 18,26 8,34 12,22 2,14 14,14" fill="#fff"/></svg>Most-Wanted Product</div>
+<div class="card">
+<div class="stitle"><div class="sbullet"></div>Product Overview</div>
+<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">Selling Volume</div>
+<div class="dnut">
+<div class="dnut-cv"><canvas id="canvas-most-wanted"></canvas></div>
+<div>
+<div style="font-size:11px;font-weight:600;margin-bottom:6px">Best Product: <strong>BAJU MUSLIM</strong></div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:4px">Average Order: <strong>155 Units</strong></div>
+<div style="font-size:11px;color:var(--muted)">Average Rating: <strong>4,79/5.00</strong></div>
+<div class="dleg" style="margin-top:8px">
+<div class="li"><div class="ld" style="background:#0b2240"></div><span>Baju Muslim</span><span class="lp" style="margin-left:auto">30.3%</span></div>
+<div class="li"><div class="ld" style="background:#1976d2"></div><span>Aksesoris</span><span class="lp" style="margin-left:auto">28.6%</span></div>
+<div class="li"><div class="ld" style="background:#64b5f6"></div><span>Hijab</span><span class="lp" style="margin-left:auto">28%</span></div>
+<div class="li"><div class="ld" style="background:#b3d9f7"></div><span>Sepatu</span><span class="lp" style="margin-left:auto">13.1%</span></div>
+</div>
+</div></div>
+</div>
+<div style="padding:0 12px 12px">
+<div class="stitle"><div class="sbullet"></div>Filter Produk</div>
+<div class="fpills"><div class="fpill">Kategori Produk <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Nama Produk <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Metode Pengiriman <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Periode Order <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:10px">Pilih Filter untuk Melihat Visualisasi</div>
+</div>
+<div style="padding:0 12px 12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Evaluasi Produk</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Baju Muslim</div><div class="ed">Jumlah Order: 50 (-5%) | Average Rating: 4.8 (-1.5%)</div></div><button class="evbdg ">Perlu Dievaluasi</button></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Hijab</div><div class="ed">Jumlah Order: 70 (+10%) | Average Rating: 4.5 (+0.2%)</div></div><button class="evbdg ok">Cukup Baik</button></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Sepatu</div><div class="ed">Jumlah Order: 50 (-6.4%) | Average Rating: 3.8 (-1.2%)</div></div><button class="evbdg ">Perlu Dievaluasi</button></div>
+</div>
+</div>
+
+<div id="screen-sc-business-support" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-sharia-commerce')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polyline points="4,32 14,14 4,32" stroke="#fff" stroke-width="2"/><polyline points="18,4 18,32" stroke="#fff" stroke-width="2"/></svg>Syariah Business Support</div>
+<div class="bssec">
+<h3>Bimbingan Manajemen Keuangan Bisnis</h3>
+<div class="bsimg" style="background:linear-gradient(135deg,#1a3d72,#0b2240)">
+<svg width="100" height="70" viewBox="0 0 130 85" fill="none"><rect x="10" y="8" width="110" height="68" rx="6" fill="#1565c0" opacity=".4"/><rect x="14" y="12" width="102" height="60" rx="4" fill="#0b2240"/><polyline points="20,60 35,40 50,48 70,28 90,35 110,16" stroke="#42a5f5" stroke-width="2.5" fill="none"/></svg>
+</div>
+<button class="bsbtn" onclick="showToast('Bimbingan manajemen keuangan bisnis akan segera tersedia')">Klik untuk informasi lebih lanjut</button>
+</div>
+<div class="bssec">
+<h3>Modul Pelatihan Bisnis Syariah</h3>
+<div class="fpills"><div class="fpill">Kategori Produk <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Nama Pelatihan <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Best Cases <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Materi Modul <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+<div class="bsimg" style="background:#1a1a1a;padding:16px;box-sizing:border-box">
+<div style="background:#222;padding:18px 14px;border-radius:8px;text-align:center;width:100%"><span style="font-size:20px;font-weight:900;color:#c0392b;font-family:serif;letter-spacing:2px">ISLAMIC<br>FINANCING</span></div>
+</div>
+<button class="bsbtn" onclick="showToast('Modul pelatihan bisnis syariah akan segera tersedia')">Klik untuk informasi lebih lanjut</button>
+</div>
+</div>
+
+<div id="screen-halal-wallet" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="hero"><div><h1>Fitur Halal<br>Wallet</h1><div class="hero-sub"><svg width="20" height="14" viewBox="0 0 40 28" fill="none" stroke="#aaa" stroke-width="2"><polyline points="2,26 12,10 22,16 32,4"/></svg>Pengelolaan keuangan syariah</div></div><svg width="60" height="60" viewBox="0 0 80 80" fill="none"><circle cx="30" cy="30" r="14" fill="#64b5f6" opacity=".5"/><circle cx="50" cy="50" r="12" fill="#ffa726" opacity=".6"/></svg></div>
+<div class="srch"><input type="text" placeholder="Cari Halal Wallet di sini"><button class="srch-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg></button></div>
+<div class="ftcards">
+<div class="ftcard" onclick="navigate('screen-hw-cp-analysis')"><div class="ftcard-img" style="background:linear-gradient(135deg,#1a2a1a,#0d1a0d);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><circle cx="22" cy="28" r="16" fill="#1565c0" opacity=".5"/><circle cx="48" cy="28" r="16" fill="#e65100" opacity=".5"/></svg></div><div><h3>C &amp; P Analysis</h3><p>Fitur consumption dan production analysis melalui visualisasi data histori transaksi.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-hw-cp-analysis')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-hw-customer-analysis')"><div class="ftcard-img" style="background:linear-gradient(135deg,#1a1a2a,#0d0d1a);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><polyline points="5,50 5,18 60,18" stroke="#42a5f5" stroke-width="2" fill="none"/><polyline points="10,40 22,28 35,34 50,16 60,20" stroke="#64b5f6" stroke-width="2" fill="none"/></svg></div><div><h3>Customer Analysis</h3><p>Identifikasi konsumen secara detail berdasarkan usia, jenis kelamin, lokasi, dan frekuensi pembelian bagi pelaku usaha.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-hw-customer-analysis')">Lebih Lanjut...</button></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<div id="screen-hw-cp-analysis" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-halal-wallet')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="13" cy="18" r="9" stroke="#fff" stroke-width="2" fill="none"/><circle cx="23" cy="18" r="9" stroke="#fff" stroke-width="2" fill="none"/></svg>C&amp;P Analysis</div>
+<div style="padding:12px">
+<div class="stitle"><div class="sbullet"></div>Filter Konsumsi Produk</div>
+<div class="fpills"><div class="fpill">Kategori Produk <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Nama Produk <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Metode Pengiriman <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Periode Order <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+<div class="stitle"><div class="sbullet"></div>Histori Transaksi Produksi (Filter Aktif: Hijab)</div>
+<div style="background:#fff;border-radius:var(--r);padding:12px;box-shadow:var(--shad);margin-bottom:12px">
+<div style="font-size:12px;font-weight:600;margin-bottom:8px">Analitik Hijab</div>
+<div class="dnut"><div class="dnut-cv"><canvas id="canvas-cp"></canvas></div>
+<div><div class="dleg"><div class="li"><div class="ld" style="background:#1976d2"></div><span>Tipe A:</span><span class="lp" style="margin-left:4px">73.4%</span></div><div class="li"><div class="ld" style="background:#0b2240"></div><span>Tipe B:</span><span class="lp" style="margin-left:4px">18.4%</span></div><div class="li"><div class="ld" style="background:#78909c"></div><span>Tipe C:</span><span class="lp" style="margin-left:4px">8.4%</span></div></div></div></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Evaluasi Produk</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Baju Muslim</div><div class="ed">Harga Produk: Rp130.000 | Harga Pasar: Rp150.000</div></div><button class="evbdg ">Perlu Dievaluasi</button></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Hijab Tipe A</div><div class="ed">Harga Produk: Rp55.000 | Harga Pasar: Rp50.000</div></div><button class="evbdg ok">Perbaiki Harga</button></div>
+<div class="evitem"><div class="evico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="evinfo"><div class="en">Produk: Sepatu Sekolah</div><div class="ed">Harga Produk: Rp200.000 | Harga Pasar: Rp250.000</div></div><button class="evbdg ok">Perbaiki Harga</button></div>
+</div>
+</div>
+
+<div id="screen-hw-customer-analysis" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-halal-wallet')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="12" cy="12" r="5" stroke="#fff" stroke-width="2" fill="none"/><circle cx="24" cy="12" r="5" stroke="#fff" stroke-width="2" fill="none"/><path d="M4 30c0-8 24-8 28 0" stroke="#fff" stroke-width="2" fill="none"/></svg>Customer Analysis</div>
+<div class="card">
+<div class="stitle"><div class="sbullet"></div>Overview Konsumen</div>
+<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">Berdasarkan : Jenis Kelamin</div>
+<div class="dnut"><div class="dnut-cv"><canvas id="canvas-cust-gender"></canvas></div><div class="dleg"><div class="li"><div class="ld" style="background:#1976d2"></div><span>Female:</span><span class="lp" style="margin-left:4px">68.8%</span></div><div class="li"><div class="ld" style="background:#0b2240"></div><span>Male:</span><span class="lp" style="margin-left:4px">31.3%</span></div></div></div>
+</div>
+<div class="card" style="margin-top:0">
+<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">Berdasarkan : Usia</div>
+<div class="dnut"><div class="dnut-cv"><canvas id="canvas-cust-age"></canvas></div><div class="dleg"><div class="li"><div class="ld" style="background:#0b2240"></div><span>20-30 y.o:</span><span class="lp" style="margin-left:4px">30.3%</span></div><div class="li"><div class="ld" style="background:#1976d2"></div><span>kurang dari 20 y.o:</span><span class="lp" style="margin-left:4px">28.6%</span></div><div class="li"><div class="ld" style="background:#64b5f6"></div><span>30-40 y.o:</span><span class="lp" style="margin-left:4px">28%</span></div><div class="li"><div class="ld" style="background:#b3d9f7"></div><span>lebih dari 40 y.o:</span><span class="lp" style="margin-left:4px">13.1%</span></div></div></div>
+</div>
+<div class="card" style="margin-top:0">
+<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px">Berdasarkan : Provinsi</div>
+<div class="dnut"><div class="dnut-cv"><canvas id="canvas-cust-prov"></canvas></div><div class="dleg"><div class="li"><div class="ld" style="background:#0b2240"></div><span>Java:</span><span class="lp" style="margin-left:4px">56.8%</span></div><div class="li"><div class="ld" style="background:#1976d2"></div><span>Sumatera:</span><span class="lp" style="margin-left:4px">22.7%</span></div><div class="li"><div class="ld" style="background:#64b5f6"></div><span>Kalimantan:</span><span class="lp" style="margin-left:4px">11.4%</span></div><div class="li"><div class="ld" style="background:#78909c"></div><span>Sulawesi:</span><span class="lp" style="margin-left:4px">9.1%</span></div></div></div>
+</div>
+</div>
+
+<div id="screen-waqf-hub" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="hero"><div><h1>Fitur<br>Waqf Hub</h1><div class="hero-sub"><svg width="20" height="14" viewBox="0 0 40 28" fill="none" stroke="#aaa" stroke-width="2"><polyline points="2,26 12,10 22,16 32,4"/></svg>Waqf crowdfunding</div></div><svg width="60" height="60" viewBox="0 0 80 80" fill="none"><rect x="20" y="8" width="40" height="52" rx="3" fill="#ffa726" opacity=".7"/><rect x="15" y="56" width="50" height="12" rx="2" fill="#ff8f00" opacity=".6"/></svg></div>
+<div class="srch"><input type="text" placeholder="Cari WaqfHub di sini"><button class="srch-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg></button></div>
+<div class="ftcards">
+<div class="ftcard" onclick="navigate('screen-waqf-ikhtisar')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#1a2a1a,#0d1a0d);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="45" viewBox="0 0 70 55" fill="none"><polyline points="5,52 5,15 60,15" stroke="#42a5f5" stroke-width="2" fill="none"/><rect x="10" y="32" width="8" height="20" fill="#1976d2"/><rect x="22" y="26" width="8" height="26" fill="#42a5f5"/><rect x="34" y="18" width="8" height="34" fill="#1976d2"/></svg></div></div><div><h3>Ikhtisar Dana Wakaf</h3><p>Gambaran komprehensif tentang total dana wakaf yang telah disalurkan oleh pengguna.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-waqf-ikhtisar')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-waqf-detail')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#2a1a1a,#1a0d0d);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="42" viewBox="0 0 70 55" fill="none"><rect x="8" y="14" width="54" height="32" rx="4" fill="#1a2040" opacity=".8"/><text x="16" y="36" font-size="13" fill="#fff" font-weight="600">Donation</text></svg></div></div><div><h3>Detail Wakaf</h3><p>Deskripsi proyek, jumlah dana yang dibutuhkan, progress target, dan histori transaksi wakaf.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-waqf-detail')">Lebih Lanjut...</button></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<div id="screen-waqf-ikhtisar" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-waqf-hub')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polyline points="3,32 12,20 22,26 32,10 38,4" stroke="#fff" stroke-width="2.5" fill="none"/></svg>WaqfHub</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Ikhtisar</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="srow">
+<div class="spill"><div class="sl">Jumlah Wakaf</div><div class="sv">Rp2.500.000</div><div class="sc">+4.1%</div></div>
+<div class="spill"><div class="sl">Tersalurkan</div><div class="sv">Rp950.000</div><div class="sc">+6.7%</div></div>
+<div class="spill"><div class="sl">Jumlah</div><div class="sv">10x</div><div class="sc"></div></div>
+</div>
+</div>
+<div style="padding:0 12px 12px">
+<div class="stitle"><div class="sbullet"></div>Performa</div>
+<select class="fsel" style="margin-bottom:10px"><option>Pilih periode untuk filter</option></select>
+<div class="chartbox" style="height:200px"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Aliran Dana per Bulan (dalam puluhan)</div><canvas id="canvas-waqf-ikhtisar" height="180"></canvas></div>
+</div>
+<div class="perfbox">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Detail Performa</div><span style="font-size:11px;color:var(--muted)">(Terpilih: Agustus 2024)</span></div>
+<select class="fsel" style="margin-bottom:12px"><option>Filter : Peringkat Terbanyak</option></select>
+<div style="display:flex;gap:12px">
+<div style="flex:1">
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span><span class="pcnt">113</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">100</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">60</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcnt">50</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span><span class="pcnt">2</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+<button class="pbtn2" style="width:140px">Jumlah Wakif: 267</button>
+<button class="pbtn2" style="width:140px">Pembatalan: 39</button>
+</div></div>
+</div>
+</div>
+
+<div id="screen-waqf-detail" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-waqf-hub')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="13" cy="18" r="9" stroke="#fff" stroke-width="2" fill="none"/><circle cx="23" cy="18" r="9" stroke="#fff" stroke-width="2" fill="none"/></svg>Detail Wakaf</div>
+<div style="padding:12px">
+<div class="fpills"><div class="fpill">Deskripsi Proyek <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Progress Target <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Jumlah Dana Needed <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Histori Transaksi <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+<div class="stitle"><div class="sbullet"></div>Progress Target (Filter Aktif: Proyek Sosial)</div>
+<div style="background:#fff;border-radius:var(--r);padding:12px;box-shadow:var(--shad);margin-bottom:12px">
+<div style="font-size:12px;font-weight:600;margin-bottom:8px">Analitik Proyek Sosial</div>
+<div class="dnut"><div class="dnut-cv"><canvas id="canvas-waqf-detail"></canvas></div>
+<div class="dleg">
+<div class="li"><div class="ld" style="background:#1976d2"></div><span>Proyek X:</span><span class="lp" style="margin-left:4px">73.4%</span></div>
+<div class="li"><div class="ld" style="background:#0b2240"></div><span>Proyek Y:</span><span class="lp" style="margin-left:4px">18.4%</span></div>
+<div class="li"><div class="ld" style="background:#78909c"></div><span>Proyek Z:</span><span class="lp" style="margin-left:4px">8.4%</span></div>
+</div></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Laporan Berkala Wakaf</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="wditem"><div class="wdico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg></div><div class="wdinfo"><div class="wdname">Proyek: X</div><div class="wddet">Dana disalurkan: Rp450k | Beneficiary: Masjid Z</div></div><button class="wdbdg" style="background:#1976d2">Tersalurkan Sebagian</button></div>
+<div class="wditem"><div class="wdico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg></div><div class="wdinfo"><div class="wdname">Proyek: Y</div><div class="wddet">Dana disalurkan: Rp150k | Beneficiary: Free Sembako</div></div><button class="wdbdg" style="background:#0b2240">Tersalurkan</button></div>
+<div class="wditem"><div class="wdico"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg></div><div class="wdinfo"><div class="wdname">Proyek: Z</div><div class="wddet">Dana disalurkan: Rp850k | Beneficiary: Kesehatan</div></div><button class="wdbdg" style="background:#444">Dalam Proses</button></div>
+</div>
+</div>
+
+<div id="screen-zakat-pay" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="hero"><div><h1>Fitur Zakat<br>Payment</h1><div class="hero-sub"><svg width="20" height="14" viewBox="0 0 40 28" fill="none" stroke="#aaa" stroke-width="2"><polyline points="2,26 12,10 22,16 32,4"/></svg>Zakat via digitalisasi</div></div><svg width="60" height="60" viewBox="0 0 80 80" fill="none"><rect x="8" y="8" width="64" height="64" rx="8" fill="#7e57c2" opacity=".3"/><circle cx="54" cy="30" r="14" fill="#ffcc02" opacity=".8"/><text x="47" y="35" font-size="15" fill="#333" font-weight="700">?</text></svg></div>
+<div class="srch"><input type="text" placeholder="Cari ZakatPay di sini"><button class="srch-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg></button></div>
+<div class="ftcards">
+<div class="ftcard" onclick="navigate('screen-zakat-charity')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#1a1a3a,#0d0d20);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="42" viewBox="0 0 70 55" fill="none"><rect x="8" y="8" width="54" height="40" rx="4" fill="#1565c0" opacity=".4"/><rect x="14" y="18" width="42" height="28" rx="2" fill="#0b2240" opacity=".8"/><path d="M20 30h30M20 36h22" stroke="#42a5f5" stroke-width="2"/></svg></div></div><div><h3>Charity Portfolio</h3><p>Menyalurkan dana zakat, infak, dan sedekah ke berbagai lembaga amil zakat/proyek sosial dipilih.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-zakat-charity')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-zakat-analytics')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#1a2a3a,#0d1a2a);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="42" viewBox="0 0 70 55" fill="none"><rect x="6" y="6" width="58" height="44" rx="4" fill="#1a1a1a"/><text x="10" y="26" font-size="11" fill="#fff" font-weight="700">ONLINE</text><text x="10" y="40" font-size="11" fill="#fff" font-weight="700">TRAINING</text></svg></div></div><div><h3>Zakat Analytics</h3><p>Laporan analitis komprehensif tentang distribusi dan dampak zakat pengguna ke masyarakat.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-zakat-analytics')">Lebih Lanjut...</button></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<div id="screen-zakat-charity" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-zakat-pay')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polyline points="4,32 4,8 32,8" stroke="#fff" stroke-width="2" fill="none"/><rect x="6" y="16" width="6" height="16" fill="#fff"/><rect x="16" y="12" width="6" height="20" fill="#fff" opacity=".7"/><rect x="26" y="20" width="6" height="12" fill="#fff" opacity=".5"/></svg>Charity Portfolio</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Overview Penyaluran Zakat</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="chartbox" style="height:150px"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Zakat Mal dan Zakat Fitrah (dalam puluhan ribu)</div><canvas id="canvas-zakat-type" height="130"></canvas></div>
+</div>
+<div style="padding:0 12px 12px">
+<div class="stitle"><div class="sbullet"></div>Progress Zakat Mal</div>
+<select class="fsel" style="margin-bottom:8px"><option>Tersalurkan Sepenuhnya</option></select>
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<select class="fsel" style="flex:1"><option>Kategori Proyek</option></select>
+<select class="fsel" style="flex:1"><option>Periode</option></select>
+</div>
+<div class="chartbox" style="height:200px"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Berdasarkan Periode (dalam puluhan)</div><canvas id="canvas-zakat-charity" height="180"></canvas></div>
+</div>
+<div style="padding:0 12px 16px">
+<button style="width:100%;background:var(--navy);color:#fff;border:none;border-radius:30px;padding:15px;font-size:15px;font-family:'Poppins',sans-serif;font-weight:700;cursor:pointer" onclick="showToast('Fitur pembayaran zakat akan segera tersedia')">Bayar Zakat di sini!</button>
+</div>
+</div>
+
+<div id="screen-zakat-analytics" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-zakat-pay')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="12" stroke="#fff" stroke-width="2" fill="none"/><polyline points="18,6 18,18 24,24" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Zakat Analytic</div>
+<div style="padding:12px">
+<div class="stitle"><div class="sbullet"></div>Pengingat Otomatis</div>
+<div class="rembox">
+<div class="remhdr">REMINDER!!!</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="font-size:11px;color:var(--muted);line-height:1.5;flex:1">Jangan lupa untuk membayar zakat fitrah pada bulan Ramadhan kali ini sejumlah yang ditetapkan.</div>
+<svg width="36" height="42" viewBox="0 0 50 56" fill="none"><path d="M10 22C10 14 40 14 40 22L42 40H8L10 22Z" fill="#1565c0"/><rect x="20" y="40" width="10" height="5" fill="#0b2240"/><circle cx="25" cy="8" r="5" fill="#1976d2"/><circle cx="30" cy="47" r="4" fill="#1565c0"/></svg>
+</div>
+</div>
+<div style="margin-top:14px">
+<div class="stitle"><div class="sbullet"></div>Distribusi Zakat</div>
+<div class="fpills"><div class="fpill">Kategori Proyek <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Nama Zakat <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Best Cases <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="fpill">Periode <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Analitik Nama Zakat</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="zkitem"><div class="zkico"><svg width="22" height="22" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="12" fill="#1565c0" opacity=".6"/><text x="9" y="20" font-size="11" fill="#fff" font-weight="700">Z</text></svg></div><div class="zkinfo"><div class="zkrow">Jenis Zakat <span>: Zakat Mal</span></div><div class="zkrow">Distribusi ke <span>: Muzakki</span></div><div class="zkrow">Dampak Zakat <span>: Kebutuhan Sekolah</span></div></div></div>
+<div class="zkitem"><div class="zkico"><svg width="22" height="22" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="12" fill="#1565c0" opacity=".6"/><text x="9" y="20" font-size="11" fill="#fff" font-weight="700">Z</text></svg></div><div class="zkinfo"><div class="zkrow">Jenis Zakat <span>: Zakat Mal</span></div><div class="zkrow">Distribusi ke <span>: Fakir</span></div><div class="zkrow">Dampak Zakat <span>: Pembelian Sembako</span></div></div></div>
+<div class="zkitem"><div class="zkico"><svg width="22" height="22" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="12" fill="#1565c0" opacity=".6"/><text x="9" y="20" font-size="11" fill="#fff" font-weight="700">Z</text></svg></div><div class="zkinfo"><div class="zkrow">Jenis Zakat <span>: Zakat Fitrah</span></div><div class="zkrow">Distribusi ke <span>: Amil Zakat</span></div><div class="zkrow">Dampak Zakat <span>: Penyaluran ke yang berhak</span></div></div></div>
+</div>
+</div>
+</div>
+
+<div id="screen-mi-invest" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="hero"><div><h1>Mudharabah<br>Invest</h1><div class="hero-sub"><svg width="20" height="14" viewBox="0 0 40 28" fill="none" stroke="#aaa" stroke-width="2"><polyline points="2,26 12,10 22,16 32,4"/></svg>Investasi syariah via digital</div></div><svg width="64" height="64" viewBox="0 0 80 80" fill="none"><circle cx="38" cy="62" r="14" fill="#ffc107" opacity=".8"/><circle cx="52" cy="58" r="10" fill="#ff9800" opacity=".7"/><rect x="28" y="20" width="6" height="30" fill="#1565c0" opacity=".8"/><rect x="38" y="28" width="6" height="22" fill="#42a5f5" opacity=".8"/><rect x="48" y="14" width="6" height="36" fill="#1565c0" opacity=".8"/></svg></div>
+<div class="srch"><input type="text" placeholder="Cari Mudharabah Invest di sini"><button class="srch-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><line x1="17" y1="17" x2="22" y2="22"/></svg></button></div>
+<div class="ftcards">
+<div class="ftcard" onclick="navigate('screen-mi-ikhtisar')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#1a2a3a,#0d1a2a);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="42" viewBox="0 0 70 55" fill="none"><polyline points="5,52 5,18 60,18" stroke="#42a5f5" stroke-width="2" fill="none"/><rect x="10" y="32" width="8" height="20" fill="#1976d2"/><rect x="24" y="26" width="8" height="26" fill="#42a5f5"/><rect x="38" y="18" width="8" height="34" fill="#1976d2"/></svg></div></div><div><h3>Ikhtisar Dana Investasi</h3><p>Fitur consumption dan production analysis melalui visualisasi data histori transaksi.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-mi-ikhtisar')">Lebih Lanjut...</button></div></div>
+<div class="ftcard" onclick="navigate('screen-mi-your-investment')"><div class="ftcard-img" style="border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><div style="background:linear-gradient(135deg,#2a1a1a,#1a0d0d);border-radius:var(--rsm);width:110px;height:90px;display:flex;align-items:center;justify-content:center"><svg width="54" height="42" viewBox="0 0 70 55" fill="none"><polyline points="5,50 15,30 25,38 40,16 55,24" stroke="#e53935" stroke-width="2.5" fill="none"/><circle cx="50" cy="48" r="10" fill="#ffc107" opacity=".6"/></svg></div></div><div><h3>Your Investment</h3><p>Histori investasi, jumlah dana yang disalurkan, progress pencapaian target, serta evaluasi investasi dan laporan berkala.</p><button class="btn-ll" onclick="event.stopPropagation();navigate('screen-mi-your-investment')">Lebih Lanjut...</button></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<div id="screen-mi-ikhtisar" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-mi-invest')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><polyline points="3,32 12,20 22,26 32,10 38,4" stroke="#fff" stroke-width="2.5" fill="none"/></svg>Mudharabah Invest</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Ikhtisar</div><div class="dots3"><span></span><span></span><span></span></div></div>
+<div class="srow">
+<div class="spill"><div class="sl">Jumlah Invest</div><div class="sv">Rp2.500.000</div><div class="sc">+4.1%</div></div>
+<div class="spill"><div class="sl">Laba</div><div class="sv">Rp250.000</div><div class="sc">+6.7%</div></div>
+<div class="spill"><div class="sl">Jumlah</div><div class="sv">15x</div><div class="sc"></div></div>
+</div>
+</div>
+<div style="padding:0 12px 12px">
+<div class="stitle"><div class="sbullet"></div>Performa</div>
+<select class="fsel" style="margin-bottom:10px"><option>Pilih periode untuk filter</option></select>
+<div class="chartbox" style="height:200px"><div style="font-size:11px;color:var(--muted);margin-bottom:6px">Aliran Dana per Bulan (dalam puluhan)</div><canvas id="canvas-mi-ikhtisar" height="180"></canvas></div>
+</div>
+<div class="perfbox">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div class="stitle" style="margin-bottom:0"><div class="sbullet"></div>Detail Performa</div><span style="font-size:11px;color:var(--muted)">(Terpilih: Agustus 2024)</span></div>
+<select class="fsel" style="margin-bottom:12px"><option>Filter : Peringkat Terbanyak</option></select>
+<div style="display:flex;gap:12px">
+<div style="flex:1">
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span><span class="pcnt">113</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">100</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcnt">60</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcnt">50</span></div>
+<div class="perfrow"><span class="stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span><span class="pcnt">2</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+<button class="pbtn2" style="width:140px">Jumlah Investor: 267</button>
+<button class="pbtn2" style="width:140px">Pembatalan: 39</button>
+</div></div>
+</div>
+</div>
+
+<div id="screen-mi-your-investment" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-mi-invest')">&#8592;</button><div class="loc"><svg width="12" height="14" viewBox="0 0 24 28" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 6.6 8 16 8 16s8-9.4 8-16c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>Tangerang Selatan</div><svg width="38" height="38" viewBox="0 0 100 110"><text x="-4" y="100" font-size="110" font-weight="900" fill="#4da0d9" font-family="Georgia,serif" opacity=".9">S</text></svg></div>
+<div class="secbar"><svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="12" stroke="#fff" stroke-width="2" fill="none"/><polyline points="12,18 16,22 24,14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Your Investment</div>
+<div style="padding:12px">
+<div class="stitle"><div class="sbullet"></div>Progress Target dan Evaluasi Investasi</div>
+<div class="invpromo" onclick="showToast('Pantau progress target investasi Anda')">
+<div class="invbg" style="background:linear-gradient(135deg,#1a3d72,#0d1b30)"><svg width="120" height="80" viewBox="0 0 160 100" fill="none"><polyline points="10,80 30,55 50,65 80,30 110,45 150,15" stroke="#e53935" stroke-width="2.5" fill="none"/><polyline points="10,80 30,65 50,70 80,50 110,60 150,40" stroke="#ef9a9a" stroke-width="1.5" fill="none" opacity=".5"/><polyline points="10,80 30,72 50,75 80,65 110,70 150,62" stroke="#42a5f5" stroke-width="1.5" fill="none" opacity=".5"/></svg></div>
+<div class="invtxt">Pantau Progress Target Investasi Anda dan Evaluasi Investasi Secara Berkala</div>
+<div class="invlbl">Klik untuk informasi lebih lanjut</div>
+</div>
+<div class="stitle"><div class="sbullet"></div>Histori Investasi dan Laporan Berkala</div>
+<div class="invpromo" onclick="showToast('Histori transaksi investasi dan laporan berkala periodik')">
+<div class="invbg" style="background:linear-gradient(135deg,#1a3d72,#0d1b2e)"><svg width="120" height="80" viewBox="0 0 160 100" fill="none"><circle cx="80" cy="50" r="36" fill="#1a4a8a" opacity=".4"/><polyline points="10,85 30,60 50,70 80,30 120,50 150,20" stroke="#fff" stroke-width="2" fill="none" opacity=".7"/><circle cx="148" cy="22" r="14" fill="#ffc107" opacity=".6"/></svg></div>
+<div class="invtxt">Histori Transaksi Investasi dan Laporan Berkala Periodik</div>
+<div class="invlbl">Klik untuk informasi lebih lanjut</div>
+</div>
+</div>
+</div>
+
+<div id="screen-chat" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div style="color:#fff;font-size:15px;font-weight:700;flex:1;text-align:center">Virtual Chat Assistant</div><svg width="32" height="32" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" fill="#1565c0"/><circle cx="14" cy="18" r="3" fill="#fff"/><circle cx="26" cy="18" r="3" fill="#fff"/><path d="M14 26c2 2 10 2 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:10px;min-height:68vh">
+<div style="background:#fff;border-radius:12px;padding:11px 13px;max-width:82%;box-shadow:var(--shad);font-size:12px;line-height:1.5">Halo! Saya adalah Virtual Chat Assistant ShariaMate. Ada yang bisa saya bantu mengenai transaksi syariah, zakat, wakaf, atau investasi halal Anda?</div>
+<div style="background:var(--bp);border-radius:12px;padding:11px 13px;max-width:80%;margin-left:auto;color:#fff;font-size:12px;line-height:1.5">Bagaimana cara membayar zakat melalui aplikasi ini?</div>
+<div style="background:#fff;border-radius:12px;padding:11px 13px;max-width:85%;box-shadow:var(--shad);font-size:12px;line-height:1.5">Untuk membayar zakat, silakan masuk ke menu <strong>Zakat Pay</strong> dari halaman utama, kemudian pilih <strong>Charity Portfolio</strong> dan klik tombol Bayar Zakat. Anda bisa memilih jenis zakat (Zakat Mal atau Zakat Fitrah) dan menyalurkannya ke lembaga amil zakat terpercaya.</div>
+<div style="background:var(--bp);border-radius:12px;padding:11px 13px;max-width:80%;margin-left:auto;color:#fff;font-size:12px;line-height:1.5">Apa itu Mudharabah Invest?</div>
+<div style="background:#fff;border-radius:12px;padding:11px 13px;max-width:85%;box-shadow:var(--shad);font-size:12px;line-height:1.5">Mudharabah Invest adalah fitur investasi berbasis prinsip syariah dengan akad mudharabah, di mana Anda sebagai pemilik modal bekerja sama dengan pengelola usaha. Keuntungan dibagi sesuai nisbah yang disepakati dan seluruh proses bebas dari unsur riba.</div>
+</div>
+<div style="padding:10px 12px;background:#fff;border-top:1px solid #eee;display:flex;gap:8px;position:sticky;bottom:65px">
+<input type="text" placeholder="Ketik pesan Anda..." style="flex:1;border:1px solid #ddd;border-radius:20px;padding:10px 16px;font-size:12px;font-family:'Poppins',sans-serif;outline:none">
+<button style="background:var(--bp);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" onclick="showToast('Pesan terkirim')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="#fff"/></svg></button>
+</div>
+</div>
+
+<div id="screen-notifications" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div style="color:#fff;font-size:15px;font-weight:700;flex:1;text-align:center">Notifikasi</div><div style="width:36px"></div></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:10px">
+<div style="background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shad);display:flex;gap:10px;align-items:flex-start"><div style="width:38px;height:38px;background:#1565c0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px;font-weight:700">&#10003;</div><div><div style="font-size:13px;font-weight:700">Transaksi Berhasil</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Pembayaran sebesar Rp500.000 untuk Checkout berhasil diproses pada 17 Mei 2026.</div></div></div>
+<div style="background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shad);display:flex;gap:10px;align-items:flex-start"><div style="width:38px;height:38px;background:#43a047;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px;font-weight:700">&#10003;</div><div><div style="font-size:13px;font-weight:700">Wakaf Tersalurkan</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Dana wakaf Anda sebesar Rp250.000 telah berhasil disalurkan ke Proyek Y (Free Sembako) pada 10 Mei 2026.</div></div></div>
+<div style="background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shad);display:flex;gap:10px;align-items:flex-start"><div style="width:38px;height:38px;background:#ffa726;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px;font-weight:700">!</div><div><div style="font-size:13px;font-weight:700">Pengingat Zakat</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Jangan lupa untuk membayar zakat fitrah pada bulan Ramadhan sejumlah yang telah ditetapkan.</div></div></div>
+<div style="background:#fff;border-radius:var(--r);padding:14px;box-shadow:var(--shad);display:flex;gap:10px;align-items:flex-start"><div style="width:38px;height:38px;background:#1565c0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px;font-weight:700">&#10003;</div><div><div style="font-size:13px;font-weight:700">Zakat Diterima</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Zakat Mal Anda sebesar Rp150.000 telah diterima dan sedang diproses untuk disalurkan kepada yang berhak.</div></div></div>
+</div>
+</div>
+
+<div id="screen-settings" class="screen">
+<div class="ih"><button class="bbtn" onclick="navigate('screen-dashboard')">&#8592;</button><div style="color:#fff;font-size:15px;font-weight:700;flex:1;text-align:center">Pengaturan</div><div style="width:36px"></div></div>
+<div style="padding:12px">
+<div style="background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--shad)">
+<div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid #eee;margin-bottom:14px"><div style="width:52px;height:52px;background:var(--bp);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700">R</div><div><div style="font-size:15px;font-weight:700">Farrel</div><div style="font-size:12px;color:var(--muted)">farrelsalsa@gmail.com</div></div></div>
+<div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:8px">AKUN</div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Edit Profil <span style="color:var(--muted)">&#8250;</span></div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Ubah Kata Sandi <span style="color:var(--muted)">&#8250;</span></div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Verifikasi Identitas <span style="color:var(--muted)">&#8250;</span></div>
+<div style="font-size:11px;color:var(--muted);font-weight:600;margin:12px 0 8px">PREFERENSI</div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Notifikasi <span style="color:var(--muted)">&#8250;</span></div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Bahasa <span style="font-size:12px;color:var(--muted)">Bahasa Indonesia &#8250;</span></div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Privasi dan Keamanan <span style="color:var(--muted)">&#8250;</span></div>
+<div style="font-size:11px;color:var(--muted);font-weight:600;margin:12px 0 8px">LAINNYA</div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Bantuan dan Dukungan <span style="color:var(--muted)">&#8250;</span></div>
+<div style="padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:13px;display:flex;justify-content:space-between;cursor:pointer">Tentang ShariaMate <span style="color:var(--muted)">&#8250;</span></div>
+<div style="padding:12px 0;font-size:13px;color:#e53935;cursor:pointer" onclick="navigate('screen-login')">Keluar</div>
+</div>
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bnav">
+  <div class="nitem" id="nav-dashboard" onclick="navigate('screen-dashboard')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Dashboard</span>
+  </div>
+  <div class="nitem" id="nav-belanja" onclick="navigate('screen-sc-marketplace')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Belanja</span>
+  </div>
+  <div style="cursor:pointer" onclick="navigate('screen-sc-marketplace')">
+    <div class="ncbtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+    </div>
+  </div>
+  <div class="nitem" id="nav-notif" onclick="navigate('screen-notifications')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+    <span>Notifikasi</span>
+  </div>
+  <div class="nitem" id="nav-settings" onclick="navigate('screen-settings')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    <span>Pengaturan</span>
+  </div>
+</nav>
+<div class="toast" id="toast"></div>
+
+</div><!-- end .app -->
+
+<script>
+const chartInst = {};
+
+function navigate(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('active');
+  el.style.display = (id === 'screen-login') ? 'flex' : 'block';
+  window.scrollTo(0, 0);
+  const bnav = document.getElementById('bnav');
+  bnav.style.display = id === 'screen-login' ? 'none' : 'flex';
+  document.querySelectorAll('.nitem').forEach(n => n.classList.remove('on'));
+  if (id === 'screen-dashboard') {
+    const n = document.getElementById('nav-dashboard');
+    if (n) n.classList.add('on');
+  } else if (['screen-sc-marketplace','screen-sc-toko-baju','screen-sharia-commerce'].includes(id)) {
+    const n = document.getElementById('nav-belanja');
+    if (n) n.classList.add('on');
+  } else if (id === 'screen-notifications') {
+    const n = document.getElementById('nav-notif');
+    if (n) n.classList.add('on');
+  } else if (id === 'screen-settings') {
+    const n = document.getElementById('nav-settings');
+    if (n) n.classList.add('on');
+  }
+  requestAnimationFrame(() => initCharts(id));
+}
+
+function initCharts(id) {
+  const map = {
+    'screen-sc-selling-volume': initSellingVolume,
+    'screen-sc-most-wanted': initMostWanted,
+    'screen-hw-cp-analysis': initCP,
+    'screen-hw-customer-analysis': initCustomer,
+    'screen-waqf-ikhtisar': initWaqfIkhtisar,
+    'screen-waqf-detail': initWaqfDetail,
+    'screen-zakat-charity': initZakatCharity,
+    'screen-mi-ikhtisar': initMIIkhtisar,
+  };
+  if (map[id]) map[id]();
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_ID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+const DA = '#0b2240', DB = '#42a5f5';
+const DATA_A = [7000,15000,8000,18000,20000,20000,18000,17000,24000,20000,18000,18000];
+const DATA_B = [1000,9000,5000,8000,17000,14000,12000,12000,17000,17000,18000,14000];
+
+function mkBar(id, labels, datasets) {
+  if (chartInst[id]) return;
+  const cv = document.getElementById(id);
+  if (!cv) return;
+  chartInst[id] = new Chart(cv, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+        y: { stacked: true, ticks: { font: { size: 9 } } }
+      }
+    }
+  });
+}
+
+function mkDnut(id, data, colors) {
+  if (chartInst[id]) return;
+  const cv = document.getElementById(id);
+  if (!cv) return;
+  chartInst[id] = new Chart(cv, {
+    type: 'doughnut',
+    data: { datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+    options: { responsive: false, cutout: '60%', plugins: { legend: { display: false } } }
+  });
+}
+
+function initSellingVolume() {
+  mkBar('canvas-selling-volume', MONTHS, [
+    { label: 'A', data: DATA_A, backgroundColor: DA, stack: 's' },
+    { label: 'B', data: DATA_B, backgroundColor: DB, stack: 's' }
+  ]);
+}
+
+function initMostWanted() {
+  mkDnut('canvas-most-wanted', [30.3,28.6,28,13.1], ['#0b2240','#1976d2','#64b5f6','#b3d9f7']);
+}
+
+function initCP() {
+  mkDnut('canvas-cp', [73.4,18.4,8.4], ['#1976d2','#0b2240','#78909c']);
+}
+
+function initCustomer() {
+  mkDnut('canvas-cust-gender', [68.8,31.3], ['#1976d2','#0b2240']);
+  mkDnut('canvas-cust-age', [30.3,28.6,28,13.1], ['#0b2240','#1976d2','#64b5f6','#b3d9f7']);
+  mkDnut('canvas-cust-prov', [56.8,22.7,11.4,9.1], ['#0b2240','#1976d2','#64b5f6','#78909c']);
+}
+
+function initWaqfIkhtisar() {
+  mkBar('canvas-waqf-ikhtisar', MONTHS_ID, [
+    { label: 'A', data: DATA_A, backgroundColor: DA, stack: 's' },
+    { label: 'B', data: DATA_B, backgroundColor: DB, stack: 's' }
+  ]);
+}
+
+function initWaqfDetail() {
+  mkDnut('canvas-waqf-detail', [73.3,18.4,8.4], ['#1976d2','#0b2240','#78909c']);
+}
+
+function initZakatCharity() {
+  if (!chartInst['canvas-zakat-type']) {
+    const cv = document.getElementById('canvas-zakat-type');
+    if (cv) {
+      chartInst['canvas-zakat-type'] = new Chart(cv, {
+        type: 'bar',
+        data: {
+          labels: ['Zakat Mal X','Zakat Mal Y','Zakat Fitrah','Infak','Sedekah'],
+          datasets: [{ data: [60000,25000,17000,5000,9000], backgroundColor: [DA,DA,DB,DB,DB], borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+            y: { ticks: { font: { size: 9 } } }
+          }
+        }
+      });
+    }
+  }
+  mkBar('canvas-zakat-charity', MONTHS, [
+    { label: 'A', data: [5000,13000,7000,16000,18000,18000,16000,15000,22000,18000,16000,16000], backgroundColor: DA, stack: 's' },
+    { label: 'B', data: [1000,8000,4000,7000,15000,12000,10000,10000,15000,15000,16000,12000], backgroundColor: DB, stack: 's' }
+  ]);
+}
+
+function initMIIkhtisar() {
+  mkBar('canvas-mi-ikhtisar', MONTHS_ID, [
+    { label: 'A', data: DATA_A, backgroundColor: DA, stack: 's' },
+    { label: 'B', data: DATA_B, backgroundColor: DB, stack: 's' }
+  ]);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+navigate('screen-login');
+</script>
+</body>
+</html>
